@@ -82,6 +82,99 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/Blog/2016/08/31/golang-intro/" title="Golang Intro" itemprop="url">Golang Intro</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
+		
+  <p class="article-time">
+    <time datetime="2016-08-31T14:41:33.000Z" itemprop="datePublished"> 發表於 2016-08-31</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>　　到公司也將近三個月了，是時候紀錄一下這陣子所學的新東西，不過我想也只是其中很小一部份而已，這三個月中大概我花了兩個多月的時間學習golang，因此這篇就決定簡單介紹一下這個滿新的語言，以及一些簡單的環境配置。　</p>
+<p>　　Go又稱作golang是google開發的一種程式語言，根據<a href="https://zh.wikipedia.org/wiki/Go" target="_blank" rel="external">wiki</a>上的資料我才發現，這語言是2009年11月才推出，難怪stackoverflow上的參考資料真的是少之又少，在開始之前先來個結論好了，我認為golang這個語言的語法使用上並不算太難，由於是很新的語言因此很容易感受到，在語法設計上有很多語言的影子，例如C的mina,pointer，類似python的range寫法，像javascrpit不用分號的結尾等等，另外最特別的是channel的功能，在很多情境下能發揮出意想不到的效果，而golang的學習曲線在初期並不算是困難，但是在要進入開發產品的階段時可能會有一段陣痛期，過了之後就會覺得其實寫golang滿爽的，因此，爾後如果再開發小的micro service時，golang可能會是我偏好的一個語言，接下來就先簡單的介紹golang的環境安裝以及基本語法。 </p>
+<p>  要玩golang當然要先安裝一下環境，可以直接到golang官網<a href="https://golang.org/dl/" target="_blank" rel="external">https://golang.org/dl/</a> 下載安裝即可，目前windows, osx, linux三個版本我都裝過，沒什麼太大問題，安裝完之後可以先開一個terminal鍵入go version如過安裝成功應該就換看到版本訊息，在windows環境下的話安裝後還要到環境變數中增加路徑安裝才算完成，到這邊golang大概裝好8成了，再來就是要設定GOPATH，GOPATH這個東西有點討厭，也有點難解釋，如果你有寫過node的話大概可以理解成global的node_modules，不過還是不太一樣就是了，有機會在好好解釋一下，不過就算沒有設定GOPATH，只要你有看到go version基本上就具備執行*.go的環境了，再來就是來一下golang的起手式，先建立一個C:\workspace\hello.go的檔案，將下列程式碼貼上 </p>
+<pre><code>package main
+
+<span class="keyword">import</span> "fmt"
+
+<span class="func"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> {
+    fmt.<span class="type">Printf</span>(<span class="string">"hello, world\n"</span>)
+}
+</code></pre><p>再到terminal下面執行<strong>go run C:\workspace\hello.go</strong>應該就可以看到令人興奮的”hello, world”。 </p>
+<p>　　golang這個語言有很多眉眉角角，例如一個檔案的第一行一定是”package XXX”，而且如果是一個程式的進入點的話一定要將package的名稱設定為main，而在這個進入點的程式內一定要有一個func main()，這寫法就很跟C是一樣的，再來簡單介紹一下golang的一些參數宣告和函式的寫法，先看以下範例</p>
+<pre><code><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string">"fmt"</span>
+
+<span class="function">func <span class="title">main</span><span class="params">()</span></span>{
+    var x <span class="keyword">int</span>
+    x = <span class="number">2</span>
+    y := 3
+    add, min := AddAndMinus(x, y)
+    fmt.Printf(<span class="string">"x:%v, y:%v, x+y:%v, x-y:%v"</span>, x, y, add, min )
+}
+
+func AddAndMinus(x <span class="keyword">int</span>, y <span class="keyword">int</span>) (<span class="keyword">int</span>, <span class="keyword">int</span>){
+    <span class="keyword">return</span> x+y, x-y
+}
+</code></pre><p>前面兩行和第一個範例相同不解釋，在main裡面我定義了兩個變數x, y，不過兩個宣告的方式有點不太一樣，以x來說是先宣告x的型態為int，之後在給予初始值，而y的型態和初始值則同時賦予，由於golang是個強行別語言，所以在變數在宣告後就無法在轉型了，即便是Int32和Int64在一般情況下也不能直接操作，試想如果所有的資料都要先定義型態之後再賦予值在開發上會有多麼不便，用這些int, bool的基本型態可能覺得還好，但是要是調用第三方的lib就頭大了，因此，golang可以再賦予值的同時給予型態，用法就是在等號左邊加上冒號，上面的y, add, min都是用相同的初始方式，再來就是要介紹func定義，先看AddAndMinus的寫法，func是函式定義的開頭，再來是接函式的名稱，函示名稱後面第一個括號式要傳入的參數，在這個例子即是傳入兩個int型態的變數，接著後面的這個括號則是要回傳的值，有寫過python的人應該很熟悉，沒錯！！golang支援多值回傳，讓人寫起來輕鬆寫意，將上面的程式貼到hello.go，在執行一次<strong>go run C:\workspace\hello.go</strong>，應該就可以看到”x:2, y:3, x+y:5, x-y:-1”的結果。</p>
+<p>　　說實在golang還有很多小細節，一篇文章有點難把我兩個月學的東西介紹完，例如：pointer, interfce(型態), struct, channel等等很多東西，有機會再來一一介紹，以下分享一些我們CTO介紹我看的學習資源</p>
+<ul>
+<li><a href="https://learnxinyminutes.com/docs/go/" target="_blank" rel="external">https://learnxinyminutes.com/docs/go/</a></li>
+<li><a href="https://www.golang-book.com/books/intro" target="_blank" rel="external">https://www.golang-book.com/books/intro</a></li>
+<li><a href="https://gobyexample.com/" target="_blank" rel="external">https://gobyexample.com/</a> </li>
+</ul>
+<p>編輯器目前則是vscode和atom在支援上較完整， </p>
+<p>這篇就先這樣吧。(to be continue…</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/Blog/tags/golang/">golang</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/Blog/2016/08/31/golang-intro/#disqus_thread" class="comments-count-link">Comments</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/Blog/2016/07/27/嘴砲日記II/" title="嘴砲日記II" itemprop="url">嘴砲日記II</a>
   </h1>
   <p class="article-author">By
@@ -398,85 +491,6 @@ ret = col.insert(<span class="built_in">test</span>_objectA)
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/Blog/2016/01/03/2015-To-2016/" title="2015 To 2016" itemprop="url">2015 To 2016</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
-		
-  <p class="article-time">
-    <time datetime="2016-01-02T18:05:08.000Z" itemprop="datePublished"> 發表於 2016-01-03</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h2 id="2015_To_2016">2015 To 2016</h2><p>　　2015年算是哥真的邁入社會的一年，這一年來感覺我也沒什麼太大長進(除了上了幾個Coursera的課程和一些MongoDB的課程外，根本完全沒進步…)，不過回顧2015也是有不少事情值得紀錄，但是最值得記錄的下來的就是我吃了</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>刺身!</strong></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>生魚片!!</strong></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>SASIMI!!!</strong></p>
-<img src="/Blog/2016/01/03/2015-To-2016/image01.jpg" alt="[SASIMI]" title="[SASIMI]">
-<p>認識我的人都知道，哥是不吃魚的，不過高中好友結婚請客，不吃又不給面子，只好硬著頭皮嗑，不過味道和我想像中有點差距，算不上是喜歡，不過尚可接受，但是以後如果要請我吃東西，還是別選海鮮…。<br>再來就是哥網誌的開張，個人自認為文筆算是不錯，因此寫網誌不算是要訓練我的文筆，單純的只是覺得有個部落格很酷，所以就開始寫囉，不過要寫網誌確實能再一次整理自己的思緒，另外一個好處就是能記錄自己的還是屁孩的想法，哥不希望自己成為我小時侯討厭的那種大人。也由於部落格開張，有時候為了衝文章數，所以哥只好開始看書了，雖然量不多，不過我本來是個討厭看書的人，因此算是有滿大幅度的進步。<br>2015最後一天哥和我的好兄弟峰哥以及大學學弟妹們一起度過，</p>
-<img src="/Blog/2016/01/03/2015-To-2016/image03.jpg" alt="[Fuck Boys]" title="[Fuck Boys]">
-<p>只能說在誇年夜提高低銷的店，和那些不肖商人發災難財的品性一樣惡劣!!!但是徒個開心也就不和店家計較，</p>
-<img src="/Blog/2016/01/03/2015-To-2016/image02.jpg" alt="[Gordon Biersch]" title="[Gordon Biersch]">
-<p>似乎忘記了一件重要的事，就是哥他媽的帶了牙套，一個快把我搞爆的小東西，很多人都覺得我戴牙套是為了變帥，但是我自己卻是覺得這件事只是附加的，主要還是健康因素，醫學報導指出蛀牙和心血管疾病有正相關性，據說是口腔中的細菌使有機會移動至心臟，而細菌再經由噬菌細胞處理後所產生的屍體，如果沒有代謝完全，就會有類似鈣化的現象，進一步使得血管缺乏彈性引發心室肥大、心臟病等症狀，因此矯正牙齒能夠使的口腔清潔更加完全，除了降低蛀牙的發生機率也比較不會有口臭，而外觀的改變只能說是痛苦後帶來的小福利，現在想想矯正牙齒這個投資算是挺划算的。</p>
-<p>總言之，2015算是哥人生劇烈變化的一年，雖然過程沒有想像的多采多姿，但也是有不少收穫，因此展望明年，我也為自己訂下了一些小目標：</p>
-<pre><code><span class="number">1.</span> 拓展生活圈
-    哥這輩子除了同學之外似乎沒有認識什麼其他的人，上班後會連絡的又更少了，因此希望在新的一年，哥能夠和<span class="number">10</span>個不認識的陌生交談，相信除了拓展生活圈之外，也會有不少收穫。
-<span class="number">2.</span> 學習投資理財
-    經過一年的職場洗禮，我已經確定領薪水的工作絕對不夠我用，因此學著如投資，將會是接下來這個年度的首要目標，如果各位有推薦的標的或是心得也可以和我多多分享。
-<span class="number">3.</span> 持續養成閱讀習慣
-    這件事情對我來說真的很難，我沒再做正事的時間可能有<span class="number">7</span>成以上都在玩英雄聯盟，不過為了寫部落格，相信硬擠也是會看幾本的。
-<span class="number">4.</span> 養成寫部落個的習慣
-    哥可能無法每天都寫一篇文章，但是希望至少每個月一篇，幫助自己成為<span class="string">"真"</span>男人。
-</code></pre><p>最後附上哥在2016的第一天就和高中同學們進行的鯡魚罐頭挑戰大賽的影片</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Ept42LdjQu8" frameborder="0" allowfullscreen></iframe>
-
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/Blog/tags/日記/">日記</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/Blog/2016/01/03/2015-To-2016/#disqus_thread" class="comments-count-link">Comments</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/Blog/page/2/">2</a><a class="page-number" href="/Blog/page/3/">3</a><a class="extend next" rel="next" href="/Blog/page/2/">Next<span></span></a>
@@ -520,6 +534,10 @@ ret = col.insert(<span class="built_in">test</span>_objectA)
 			
 		
 			
+				<li><a href="/Blog/tags/環境/" title="環境">環境<sup>2</sup></a></li>
+			
+		
+			
 				<li><a href="/Blog/tags/C/" title="C#">C#<sup>2</sup></a></li>
 			
 		
@@ -528,15 +546,15 @@ ret = col.insert(<span class="built_in">test</span>_objectA)
 			
 		
 			
-				<li><a href="/Blog/tags/環境/" title="環境">環境<sup>2</sup></a></li>
-			
-		
-			
 				<li><a href="/Blog/tags/思想/" title="思想">思想<sup>2</sup></a></li>
 			
 		
 			
-				<li><a href="/Blog/tags/MongoDB/" title="MongoDB">MongoDB<sup>1</sup></a></li>
+				<li><a href="/Blog/tags/golang/" title="golang">golang<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/Blog/tags/擴充方法/" title="擴充方法">擴充方法<sup>1</sup></a></li>
 			
 		
 			
@@ -560,7 +578,7 @@ ret = col.insert(<span class="built_in">test</span>_objectA)
 			
 		
 			
-				<li><a href="/Blog/tags/擴充方法/" title="擴充方法">擴充方法<sup>1</sup></a></li>
+				<li><a href="/Blog/tags/MongoDB/" title="MongoDB">MongoDB<sup>1</sup></a></li>
 			
 		
 			
