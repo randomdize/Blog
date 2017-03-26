@@ -82,6 +82,68 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/Blog/2017/03/26/docker-mysql-phpmyadmin/" title="docker-mysql-myadmin" itemprop="url">docker-mysql-myadmin</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
+		
+  <p class="article-time">
+    <time datetime="2017-03-26T14:00:07.000Z" itemprop="datePublished"> 發表於 2017-03-26</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h2 id="Dockerlize_your_mysql_&amp;_phpmyadmin">Dockerlize your mysql &amp; phpmyadmin</h2><p>　　最近email從遠方捎來的一個訊息，就是很久以前我在別人的Blog上的留言居然有人回復了!! <a href="http://omarghader.github.io/docker-tutorial-phpmyadmin-and-mysql-server/" target="_blank" rel="external">那篇文章</a>其實就是一個Docker的教學，教學內容簡單說就是分別起一個mysql和一個phpmyadmin的image並且能用phpmyadmin訪問，那篇的文章其實寫得還算OK，但是他用的image版本似乎不是官方的，而且照著弄也會有錯誤，而回應我的答案也是怪怪的感覺走歪掉(要我bash連進去mysql，再跑個sql改個帳好密碼什麼的)，所以開一篇記錄一下，怎麼用兩行指令就起一個mysql+phpmyadmin的服務。</p>
+<pre><code>docker <span class="keyword">run</span> --name mysql -<span class="keyword">e</span> MYSQL_ROOT_PASSWORD=0000 -<span class="keyword">d</span> mysql
+docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d</span> --link mysql:<span class="keyword">db</span> -p 8080:80 phpmyadmin/phpmyadmin
+</code></pre><p>執行之後就可以直接用瀏覽器連上localhost:8080。其實這個問題我已經在我看完官方的文件後就已經解決了，不過如果臨時要我起一個可能還是要再查一下，所以乾脆開一篇記錄一下方便以後使用。　</p>
+<p><strong>ps: root/0000</strong></p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/Blog/tags/Docker/">Docker</a><a href="/Blog/tags/Note/">Note</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/Blog/2017/03/26/docker-mysql-phpmyadmin/#disqus_thread" class="comments-count-link">Comments</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/Blog/2017/03/20/bangkok-independent-travel-IV/" title="曼谷自由行" itemprop="url">曼谷自由行</a>
   </h1>
   <p class="article-author">By
@@ -391,74 +453,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/Blog/2017/01/03/2016-To-2017/" title="2016 To 2017" itemprop="url">2016 To 2017</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
-		
-  <p class="article-time">
-    <time datetime="2017-01-02T16:15:13.000Z" itemprop="datePublished"> 發表於 2017-01-03</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h2 id="2016_To_2017">2016 To 2017</h2><p>　　轉眼間2016年就結束了，不知道是不是年紀越來越大，總覺得時間越過越快，去年年初我給了我自己幾個目標分別是拓展生活圈、學習投資理財、閱讀習慣養成和寫部落格的習慣，整體來說呢一樣都都沒達成…不過我也不是一事無成，以下讓我娓娓道來，由於去年換新工作，因此認識了不少新同事，所以硬要說的話應該也算是拓展生活圈，再來是學習投資理財，去年哥開始進入股市打滾，其中有賺有賠，以新手來說我看還算是免強及格…再來就是要養成閱讀的習慣，這點完全是失敗，去年一整年我只看完了一本”HOST”和半本的”李光耀觀天下”，對沒有看書習慣的我而言這點真是特別需要再多多加強，最後是養成寫部落格的習慣，去年一整年我只寫了八篇，比預期的少了四篇，換算成完成度的話也有六成，因此我認為還算是可以接受，因此2016年所訂立下的目標完成率，我想應該也有個7成。</p>
-<p>　　除了檢討這些目標之外，2016年最大的改變就是我換工作了，我想這也是我去年一整年做出最重要也是最成功的決定，逼著自己走出舒適圈(進入另一個舒適圈?)，由於換工作的緣故，逼得我必須快速適應環境，除了學習如何使用macOS，被神推坑進入vim的世界，還學了一個新的語言golang，寫了一些鳥鳥nodejs的服務，玩了將近半年的google cloud，學著使用超潮Docker，每天上班用著破破的英文和CTO講話，種種的一切對我來說都是全新的體驗，只能說這種變動極大的環境實在是太適合我了。2016年雖然訂立的目標沒有確實完成，但是整體而言，2016的內容和整體的進步幅度我給自己A-的成績。</p>
-<p>　　在2016即將結束的最後一天早晨，我看著窗外的太陽，突然想著一件事，就是明天早上的日出和今天的有什麼不同嗎？為什麼一堆人要看日出？想著想著我有所體悟，我想人生想完成的目標太多了，如果每年才自我審視一次也許太慢了，也因為時間區間太長讓自己常常有時間很多的錯覺，等到要年底的時候，回頭看著累積的事情才感嘆我想也是無解了，因此，在新到來的2017年我把自我審視的時間粒度縮短為2周，一個感覺很短卻是很長的時間，2週能做很多事，但要是一不小心也可能什麼都沒做就結束了，希望能透過這樣的時間管理，讓2017的我更加有效率。</p>
-<p>　　2017年的開始當然還是要來定一些目標，其實在去年年底時我就想到該做的事情，</p>
-<pre><code><span class="number">1.</span> 健康的身體
-  <span class="number">2016</span>年底我去爬了象山，一個<span class="number">20</span>分鐘的路程，把我搞得快掛了，這讓我意識到再這樣下去是不行的，這個事件過後迫使著不斷思考著<span class="string">"用進廢退說"</span>，才<span class="number">27</span>歲的我心肺已經退化成這樣，這我可是不能接受，因此，我希望新的一年我可跑步超過<span class="number">50</span>天，讓自己身體能找回更多的活力。
-<span class="number">2.</span> 語言的精進
-  這件事情不是臨時決定的，也不是突然有感而發，而是該開始替未來鋪路了，我想認識我的人都知道，哥想出去國外工作看看，因此，在我的緊箍套取下來之前，我要準備好該有的實力，來應對接下來可能會發生的事，我想驗收標準就用TOEIC金色證書來當個標準好了。
-<span class="number">3.</span> 繼續寫部落格
-  其實每次在寫部落格的時候都會怕寫不完，畢竟腦中思考的東西太多，能寫的東西也太多了，有些東西能寫，有些不能，因為這個號稱是言論自由的社會，其實已經不再自由了，雖然我不會分享我的文章，但是在網路上的東西就是會被其他人看到，所以一些過於激進的言論，我想還是放在心中吧。
-</code></pre><p>　　2017雖然只訂了三個目標，但是三個都是難度頗高的，我也不知道能完成到什麼程度，但是如果能成功，我想又會是很不一樣的一年。</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/Blog/tags/日記/">日記</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/Blog/2017/01/03/2016-To-2017/#disqus_thread" class="comments-count-link">Comments</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/Blog/page/2/">2</a><a class="page-number" href="/Blog/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/Blog/page/5/">5</a><a class="extend next" rel="next" href="/Blog/page/2/">Next<span></span></a>
@@ -498,15 +492,19 @@
 			
 		
 			
-				<li><a href="/Blog/tags/大學/" title="大學">大學<sup>4</sup></a></li>
-			
-		
-			
 				<li><a href="/Blog/tags/旅遊/" title="旅遊">旅遊<sup>4</sup></a></li>
 			
 		
 			
+				<li><a href="/Blog/tags/大學/" title="大學">大學<sup>4</sup></a></li>
+			
+		
+			
 				<li><a href="/Blog/tags/嘴砲/" title="嘴砲">嘴砲<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/Blog/tags/環境/" title="環境">環境<sup>2</sup></a></li>
 			
 		
 			
@@ -518,7 +516,11 @@
 			
 		
 			
-				<li><a href="/Blog/tags/環境/" title="環境">環境<sup>2</sup></a></li>
+				<li><a href="/Blog/tags/Docker/" title="Docker">Docker<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/Blog/tags/Note/" title="Note">Note<sup>1</sup></a></li>
 			
 		
 			
@@ -551,8 +553,6 @@
 		
 			
 				<li><a href="/Blog/tags/MongoDB/" title="MongoDB">MongoDB<sup>1</sup></a></li>
-			
-		
 			
 		
 			
