@@ -155,7 +155,7 @@ docker -<span class="keyword">it</span> redis bash
 <h3 id="MySQL_&amp;_phpmyadmin">MySQL &amp; phpmyadmin</h3><p>　　最後就加上之前介紹，我這邊就不多做解釋</p>
 <pre><code>docker <span class="keyword">run</span> --name mysql -<span class="keyword">e</span> MYSQL_ROOT_PASSWORD=0000 -<span class="keyword">d</span> mysql
 docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d</span> --link mysql:<span class="keyword">db</span> -p 8080:80 phpmyadmin/phpmyadmin
-</code></pre><p>以上就是我目前有再用資料庫，以後如果有在玩新的資料庫再依依更新好了。</p>
+</code></pre><p>以上就是我目前有再用資料庫，以後如果有在玩新的資料庫再一一更新好了。</p>
 
         
         

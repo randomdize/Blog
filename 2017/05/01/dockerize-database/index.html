@@ -21,7 +21,7 @@ docker run -d -p 27017:27017 --name mongo mong">
 <meta property="og:description" content="Dockerize Database　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。
 MongoDB　　要起一個MongoDB的語法其實相當簡單
 docker run -d -p 27017:27017 --name mongo mong">
-<meta property="og:updated_time" content="2017-05-01T16:21:47.094Z">
+<meta property="og:updated_time" content="2017-05-01T16:28:01.681Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerize Database">
 <meta name="twitter:description" content="Dockerize Database　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。
@@ -167,7 +167,7 @@ docker -<span class="keyword">it</span> redis bash
 <h3 id="MySQL_&amp;_phpmyadmin">MySQL &amp; phpmyadmin</h3><p>　　最後就加上之前介紹，我這邊就不多做解釋</p>
 <pre><code>docker <span class="keyword">run</span> --name mysql -<span class="keyword">e</span> MYSQL_ROOT_PASSWORD=0000 -<span class="keyword">d</span> mysql
 docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d</span> --link mysql:<span class="keyword">db</span> -p 8080:80 phpmyadmin/phpmyadmin
-</code></pre><p>以上就是我目前有再用資料庫，以後如果有在玩新的資料庫再依依更新好了。</p>
+</code></pre><p>以上就是我目前有再用資料庫，以後如果有在玩新的資料庫再一一更新好了。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
