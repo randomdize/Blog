@@ -4,23 +4,29 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>docker-mysql-phpmyadmin | Diin Ben</title>
+    <title>Dockerize Database | Diin Ben</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ben">
     
 
     
-    <meta name="description" content="Dockerize your mysql &amp;amp; phpmyadmin　　最近email從遠方捎來的一個訊息，就是很久以前我在別人的Blog上的留言居然有人回復了!! 那篇文章其實就是一個Docker的教學，教學內容簡單說就是分別起一個mysql和一個phpmyadmin的image並且能用phpmyadmin訪問，那篇的文章其實寫得還算OK，但是他用的image版本似乎不是官方的，而且照著弄">
+    <meta name="description" content="Dockerize Database　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。
+MongoDB　　要起一個MongoDB的語法其實相當簡單
+docker run -d -p 27017:27017 --name mongo mong">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker-mysql-phpmyadmin">
-<meta property="og:url" content="http://lbeeon.github.io/Blog/2017/03/26/docker-mysql-phpmyadmin/index.html">
+<meta property="og:title" content="Dockerize Database">
+<meta property="og:url" content="http://lbeeon.github.io/Blog/2017/05/01/dockerize-database/index.html">
 <meta property="og:site_name" content="Diin Ben">
-<meta property="og:description" content="Dockerize your mysql &amp;amp; phpmyadmin　　最近email從遠方捎來的一個訊息，就是很久以前我在別人的Blog上的留言居然有人回復了!! 那篇文章其實就是一個Docker的教學，教學內容簡單說就是分別起一個mysql和一個phpmyadmin的image並且能用phpmyadmin訪問，那篇的文章其實寫得還算OK，但是他用的image版本似乎不是官方的，而且照著弄">
-<meta property="og:updated_time" content="2017-05-01T14:30:42.858Z">
+<meta property="og:description" content="Dockerize Database　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。
+MongoDB　　要起一個MongoDB的語法其實相當簡單
+docker run -d -p 27017:27017 --name mongo mong">
+<meta property="og:updated_time" content="2017-05-01T16:21:47.094Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="docker-mysql-phpmyadmin">
-<meta name="twitter:description" content="Dockerize your mysql &amp;amp; phpmyadmin　　最近email從遠方捎來的一個訊息，就是很久以前我在別人的Blog上的留言居然有人回復了!! 那篇文章其實就是一個Docker的教學，教學內容簡單說就是分別起一個mysql和一個phpmyadmin的image並且能用phpmyadmin訪問，那篇的文章其實寫得還算OK，但是他用的image版本似乎不是官方的，而且照著弄">
+<meta name="twitter:title" content="Dockerize Database">
+<meta name="twitter:description" content="Dockerize Database　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。
+MongoDB　　要起一個MongoDB的語法其實相當簡單
+docker run -d -p 27017:27017 --name mongo mong">
 <meta name="twitter:creator" content="@diinben">
 
     
@@ -81,14 +87,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/Blog/2017/03/26/docker-mysql-phpmyadmin/" title="docker-mysql-phpmyadmin" itemprop="url">docker-mysql-phpmyadmin</a>
+      <a href="/Blog/2017/05/01/dockerize-database/" title="Dockerize Database" itemprop="url">Dockerize Database</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
 		
   <p class="article-time">
-    <time datetime="2017-03-26T14:00:07.000Z" itemprop="datePublished"> 發表於 2017-03-26</time>
+    <time datetime="2017-05-01T14:29:11.000Z" itemprop="datePublished"> 發表於 2017-05-01</time>
     
   </p>
 </header>
@@ -97,15 +103,71 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerize_your_mysql_&_phpmyadmin"><span class="toc-number">1.</span> <span class="toc-text">Dockerize your mysql & phpmyadmin</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerize_Database"><span class="toc-number">1.</span> <span class="toc-text">Dockerize Database</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MongoDB"><span class="toc-number">1.1.</span> <span class="toc-text">MongoDB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgresSQL"><span class="toc-number">1.2.</span> <span class="toc-text">PostgresSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RethinkDB"><span class="toc-number">1.3.</span> <span class="toc-text">RethinkDB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis"><span class="toc-number">1.4.</span> <span class="toc-text">Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL_&_phpmyadmin"><span class="toc-number">1.5.</span> <span class="toc-text">MySQL & phpmyadmin</span></a></li></ol></li></ol>
 		
 		</div>
 		
-		<h2 id="Dockerize_your_mysql_&amp;_phpmyadmin">Dockerize your mysql &amp; phpmyadmin</h2><p>　　最近email從遠方捎來的一個訊息，就是很久以前我在別人的Blog上的留言居然有人回復了!! <a href="http://omarghader.github.io/docker-tutorial-phpmyadmin-and-mysql-server/" target="_blank" rel="external">那篇文章</a>其實就是一個Docker的教學，教學內容簡單說就是分別起一個mysql和一個phpmyadmin的image並且能用phpmyadmin訪問，那篇的文章其實寫得還算OK，但是他用的image版本似乎不是官方的，而且照著弄也會有錯誤，而回應我的答案也是怪怪的感覺走歪掉(要我bash連進去mysql，再跑個sql改個帳號密碼什麼的)，所以開一篇記錄一下，怎麼用兩行指令就起一個mysql+phpmyadmin的服務。</p>
+		<h2 id="Dockerize_Database">Dockerize Database</h2><p>　　繼上一篇dockerize MySQL之後，我心裡就很想把一些其他的資料庫補一補，畢竟身為一個後端工程師，玩過幾種資料庫也是合情合理吧，這邊所提及的資料庫基本上都是我工作上有接觸到的，就用這篇來記錄一下吧。</p>
+<h3 id="MongoDB">MongoDB</h3><p>　　要起一個MongoDB的語法其實相當簡單</p>
+<pre><code>docker <span class="command">run</span> -d -p <span class="number">27017</span>:<span class="number">27017</span> <span class="comment">--name mongo mongo</span>
+</code></pre><p>另外如果你突然想要使用mongoshell但是又不想安裝MongoDB，也可以直接透過image中的shell來執行，語法參考如下</p>
+<pre><code><span class="comment"># link to docker image (name: mongo)</span>
+docker <span class="command">run</span> -<span class="keyword">it</span> <span class="comment">--link mongo:mongo mongo bash -c 'mongo --host mongo'</span>
+
+<span class="comment"># link to ip</span>
+docker <span class="command">run</span> -<span class="keyword">it</span> mongo bash -c 'mongo <span class="comment">--host 127.0.0.1'</span>
+</code></pre><p>當初我要起MongoDB的原因主要是因為需要一個測試的資料庫，所以這邊也順便補上匯入資料的方法</p>
+<pre><code><span class="comment">#</span> <span class="comment">restore</span> <span class="comment">to</span> <span class="comment">docker</span> <span class="comment">image</span> <span class="comment">(name:</span> <span class="comment">mongo)</span>
+<span class="comment">#</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">drop</span><span class="string">,</span> <span class="literal">-</span><span class="comment">j</span><span class="string">,</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">noIndexRestore</span> <span class="comment">(not</span> <span class="comment">require)</span>
+<span class="comment">docker</span> <span class="comment">run</span> <span class="literal">-</span><span class="comment">it</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">link</span> <span class="comment">mongo:mongo</span> <span class="literal">-</span><span class="comment">v</span> <span class="comment">/data:/tmp</span> <span class="comment">mongo</span> <span class="comment">bash</span> <span class="literal">-</span><span class="comment">c</span> <span class="comment">'mongorestore</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">host</span> <span class="comment">mongo</span> <span class="literal">-</span><span class="comment">j</span> <span class="comment">1</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">noIndexRestore</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">db</span> <span class="comment">'test'</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">drop</span> <span class="comment">/tmp'</span>
+</code></pre><p>基本上在MongoDB我需要的操作就大概是上面這些。</p>
+<h3 id="PostgresSQL">PostgresSQL</h3><p>　　PostgresSQL是我最近這幾個禮拜才開始用的資料庫，一個歷史久遠且功能強大的資料庫，不囉嗦先來個起手式</p>
+<pre><code>docker run --name postgres -e POSTGRES_PASSWORD=<span class="number">0000</span> -p <span class="number">5432</span>:<span class="number">5432</span> -d postgres
+</code></pre><p>另外也常會用到psql去執行一些*.sql，不過因為要執行的檔案一般都滿多的，所以我就沒有像MongoDB一樣用bash -c下去執行，而是直接進去執行他的bash</p>
+<pre><code><span class="comment"># link to docker image (name: postgres)</span>
+docker <span class="command">run</span> -<span class="keyword">it</span> <span class="comment">--link postgres:db -v /sql/:/tmp/ postgres bash</span>
+</code></pre><p>這邊順便簡單紀錄一下我用到psql語法</p>
+<pre><code># connect to database
+psql -<span class="keyword">h</span> target_host -<span class="keyword">U</span> postres_user -<span class="keyword">d</span> target_db
+
+# connect to database without password prompt
+# <span class="keyword">set</span> env is the only way
+PGPASSWORD=0000 psql -<span class="keyword">h</span> target_host -<span class="keyword">U</span> postres_user -<span class="keyword">d</span> target_db
+
+# exec sql <span class="keyword">file</span>
+psql -<span class="keyword">h</span> target_host -<span class="keyword">U</span> postres_user -<span class="keyword">d</span> target_db -f /tmp/<span class="keyword">file</span>.sql
+</code></pre><p>再來就是很常會用到匯出/匯入</p>
+<pre><code># dump
+pg_dump -Fc -v -f /tmp/<span class="keyword">file</span>.dump -<span class="keyword">U</span> postres_user -<span class="keyword">h</span> db_host target_db
+
+# <span class="keyword">restore</span>
+pg_restore -a -<span class="keyword">d</span> target_db -<span class="keyword">h</span> db_host -<span class="keyword">U</span> postres_user -Fc /tmp/<span class="keyword">file</span>.dump
+</code></pre><p>另外我還有用到PostgresSQL的benchmark工具，由於pgbench基本上就可以寫一篇了吧，所以我這邊就簡單提一下怎麼執行就好，如果需要詳細測試參數可以參考<a href="https://www.postgresql.org/docs/9.5/static/pgbench.html" target="_blank" rel="external">官方文件</a>以及<a href="https://wiki.postgresql.org/wiki/Pgbenchtesting" target="_blank" rel="external">Postgres Wiki</a></p>
+<pre><code><span class="preprocessor"># pgbench mark</span>
+<span class="preprocessor"># initial test data</span>
+PGPASSWORD=<span class="number">0000</span> pgbench host=<span class="number">130.211</span><span class="number">.247</span><span class="number">.227</span> -U postgres -i -s <span class="number">70</span> bench
+
+<span class="preprocessor"># run with test data</span>
+PGPASSWORD=<span class="number">0000</span> pgbench host=<span class="number">130.211</span><span class="number">.247</span><span class="number">.227</span> -U postgres -v -c <span class="number">4</span> -j <span class="number">2</span>  -T <span class="number">60</span> bench
+</code></pre><p>以上就是目前我有用到PostgresSQL相關的指令。</p>
+<h3 id="RethinkDB">RethinkDB</h3><p>　　雖說RethinkDB已經是夕陽資料庫了，但是就是這樣才更值得起一個docker container免得汙染我的電腦，不囉嗦直接複製貼上</p>
+<pre><code>docker run --name rethinkdb -p <span class="number">8080</span>:<span class="number">8080</span> -p <span class="number">28015</span>:<span class="number">28015</span> -p <span class="number">29015</span>:<span class="number">29015</span> -d rethinkdb
+</code></pre><p>基本上大部分的使用都是透過RethinkDB本身所提供的介面來操作，所以使用者就直接連上localhost:8080即可，另外28015是用來給sdk連線用，雖說他本身的介面已經提供滿強大的功能了，不過就是沒有資料的匯出/匯入，而且官方image內部的工具還不能執行!!!所以我只好請求<a href="https://github.com/petecoop/rethinkdb-driver" target="_blank" rel="external">Open Source</a>支援，這邊就一併附上吧</p>
+<pre><code>docker run --rm --link rethinkdb:rethinkdb -v /dump<span class="class">.tar</span><span class="class">.gz</span>:/tmp/dump<span class="class">.tar</span><span class="class">.gz</span> petecoop/rethinkdb-driver rethinkdb-restoer --force -c rethinkdb /tmp/dump<span class="class">.tar</span><span class="class">.gzs</span>
+</code></pre><p>RethinkDB基本上就這樣吧，我也不想再過多著墨。</p>
+<h3 id="Redis">Redis</h3><p>　　其實要起一個Redis也就跟上面差不多，只是把image改個名字即可</p>
+<pre><code>docker <span class="command">run</span> <span class="comment">--name redis -d redis</span>
+</code></pre><p>不過我這邊大部分是想要用redis-cli，所以就順便寫一下</p>
+<pre><code><span class="comment"># link to docker image (name: redis)</span>
+docker -<span class="keyword">it</span> redis bash -c 'redis-cli <span class="comment">--host redis'</span>
+
+<span class="comment"># exec bash then call redis-cli</span>
+docker -<span class="keyword">it</span> redis bash
+</code></pre><p>我對Redis的需求就沒有像上面那資料庫還需要匯入/匯出什麼的，所以這不就特別介紹了。</p>
+<h3 id="MySQL_&amp;_phpmyadmin">MySQL &amp; phpmyadmin</h3><p>　　最後就加上之前介紹，我這邊就不多做解釋</p>
 <pre><code>docker <span class="keyword">run</span> --name mysql -<span class="keyword">e</span> MYSQL_ROOT_PASSWORD=0000 -<span class="keyword">d</span> mysql
 docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d</span> --link mysql:<span class="keyword">db</span> -p 8080:80 phpmyadmin/phpmyadmin
-</code></pre><p>執行之後就可以直接用瀏覽器連上localhost:8080。其實這個問題我已經在我看完官方的文件後就已經解決了，不過如果臨時要我起一個可能還是要再查一下，所以乾脆開一篇記錄一下方便以後使用。　</p>
-<p><strong>ps: root/0000</strong></p>
+</code></pre><p>以上就是我目前有再用資料庫，以後如果有在玩新的資料庫再依依更新好了。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -114,7 +176,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 
   <div class="article-tags">
   
-  <span></span> <a href="/Blog/tags/Docker/">Docker</a><a href="/Blog/tags/Note/">Note</a>
+  <span></span> <a href="/Blog/tags/Docker/">Docker</a><a href="/Blog/tags/MongoDB/">MongoDB</a><a href="/Blog/tags/MySQL/">MySQL</a><a href="/Blog/tags/Note/">Note</a><a href="/Blog/tags/PostgresSQL/">PostgresSQL</a><a href="/Blog/tags/Redis/">Redis</a><a href="/Blog/tags/RethinkDB/">RethinkDB</a>
   </div>
 
 </div>
@@ -123,7 +185,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://lbeeon.github.io/Blog/2017/03/26/docker-mysql-phpmyadmin/" data-title="docker-mysql-phpmyadmin | Diin Ben" data-tsina="undefined" class="share clearfix">
+	  <div data-url="http://lbeeon.github.io/Blog/2017/05/01/dockerize-database/" data-title="Dockerize Database | Diin Ben" data-tsina="undefined" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -136,19 +198,11 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/Blog/2017/05/01/dockerize-database/" title="Dockerize Database">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Dockerize Database</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/Blog/2017/03/20/bangkok-independent-travel-IV/"  title="曼谷自由行">
+<a href="/Blog/2017/03/26/docker-mysql-phpmyadmin/"  title="docker-mysql-phpmyadmin">
  <strong>下一篇：</strong><br/> 
- <span>曼谷自由行
+ <span>docker-mysql-phpmyadmin
 </span>
 </a>
 </div>
@@ -169,7 +223,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerize_your_mysql_&_phpmyadmin"><span class="toc-number">1.</span> <span class="toc-text">Dockerize your mysql & phpmyadmin</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerize_Database"><span class="toc-number">1.</span> <span class="toc-text">Dockerize Database</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MongoDB"><span class="toc-number">1.1.</span> <span class="toc-text">MongoDB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgresSQL"><span class="toc-number">1.2.</span> <span class="toc-text">PostgresSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RethinkDB"><span class="toc-number">1.3.</span> <span class="toc-text">RethinkDB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis"><span class="toc-number">1.4.</span> <span class="toc-text">Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL_&_phpmyadmin"><span class="toc-number">1.5.</span> <span class="toc-text">MySQL & phpmyadmin</span></a></li></ol></li></ol>
  
   </div>
 
