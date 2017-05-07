@@ -82,6 +82,77 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/Blog/2017/05/07/BigQuery/" title="Intro &amp; BigQuery" itemprop="url">Intro &amp; BigQuery</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
+		
+  <p class="article-time">
+    <time datetime="2017-05-07T09:19:52.000Z" itemprop="datePublished"> 發表於 2017-05-07</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h3 id="Intro">Intro</h3><p>　　想想到meepshop也將在這個月底滿一年了，在這過去一年多內學了不少新東西，也玩了不少服務，不過主要都是以GCP(Google Cloud Platform)的服務為主，因此，接下來幾篇文章都會聚焦在這些服務上，也算是一個簡短的工作回顧吧，至於我有用過哪些服務呢(這邊以有用過SDK為主)，以下簡單列舉一下</p>
+<ul>
+<li>BigQuery</li>
+<li>Storage</li>
+<li>Datastore</li>
+<li>Spanner</li>
+<li>SQL(Postgres)</li>
+<li>PubSub</li>
+<li>Networking(DNS, loadbalance etc…)   </li>
+</ul>
+<p>以上這些服務基本上都是以golang作為開發主要語言，因此，之後的介紹也應該會是圍繞在如何操作SDK，並配合簡單範例以供參考，廢話不多說直接來進入主題吧。</p>
+<h3 id="BigQuery">BigQuery</h3><p>　　為什麼第一篇選擇介紹BigQuery呢？原因無它，因為她是我第一個用的GCP服務，簡單介紹一下什麼BigQuery，BigQuery是Google提供的一個服務，主要是用來統計大量的資料，特別的是它支援NoSQL的資料結構同時又能使用SQL like的語法查詢，因此可以說是相當強大，猶豫敝公司所使用的是NoSQL資料庫，因此，看到這些支援的特色整個就是很合胃口，所以公司就委託小弟我去簡單研究一下，在正式進入程式碼之前還有一個東西要提一下，就是Goolge的SDK貌似有兩種，一種是<a href="https://github.com/GoogleCloudPlatform/google-cloud-go" target="_blank" rel="external">google/google-api-go-client</a>，另一種則是<a href="https://github.com/google/google-api-go-client" target="_blank" rel="external">GoogleCloudPlatform/google-cloud-go</a>的版本，那麼這兩種有什麼差別呢？簡單來說google開頭的repos包含了所有google所提供的服務api-sdk，像是translate、drive以及GCP上面有提供的BigQuery、Datastore等等，而另外一個GoogleCloudPlatform開頭的，感覺比較像是將前面那一個SDK和一些語言本身的使用習慣wrap之後的SDK，因此，使用上相對會比較簡單，而在GCP的官方教學內容，大部分也都是以GoogleCloudPlatform為主，不過身為一個硬派玩家，只使用GoogleCloudPlatform的開發工具，有很多事情似乎辦不到，以BigQuery來說好了，如果你想要在程式裡面使用<a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/user-defined-functions" target="_blank" rel="external">UDF</a>的話，在GoogleCloudPlatform的SDK上是完全沒有辦法，不能的理由也非常簡單就是他根本沒有實作這個部分，因此，我一開始也是看官方推薦使用，但是在開發產品的時候才會發現，基本上要用的功能想要什麼就沒什麼，所以我這邊才會找到另外一個google-api-go-client的repos，不過如果你需要僅是非常基本的功能，那照著官方的文件應該就可以滿足你的需求，不過這邊主要還是要介紹比較底層SDK的使用方法，再來就簡單敘述一下怎麼使用這SDK吧。<br>  　<br>   這邊介紹一下整個範例程式的架構，簡單來說就是先建立一個BigQuery的client，再來就是到BigQuery建立一個要執行的Job並展示結果，詳細程式碼我最後會附上連結<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">func main() &#123;</span><br><span class="line">	<span class="comment">// create a bigquery client</span></span><br><span class="line">	jwtConfig, <span class="keyword">err</span> := NewJWTConfig()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		<span class="keyword">log</span>.Fatalln(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	client := jwtConfig.Client(context.Background())</span><br><span class="line">	bigqueryService, <span class="keyword">err</span> := bigquery.New(client)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		<span class="keyword">log</span>.Fatalln(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// create a jobsService</span></span><br><span class="line">	jobsService = bigquery.NewJobsService(bigqueryService)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// create an async job</span></span><br><span class="line">	jobId, <span class="keyword">err</span> := jobInsert(cmd)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		<span class="keyword">log</span>.Fatalln(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// polling to check status</span></span><br><span class="line">	<span class="keyword">err</span> = jobDone(jobId)</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		<span class="keyword">log</span>.Fatalln(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// get result</span></span><br><span class="line">	jobGetResult(jobId)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>感覺上好像沒有什麼特別，不過和官方教學最大的差異是這裡執行的是一個非同步的Job，而同步和非同步的差別主要是在於執行時所能夠使用的資源和時間，因此如果你想要分析上百GB的資料，官方提供的方法是完全不管用的，因為在運算的時候你就會拿到timeout或是response too large的錯誤，這時候如果你看官方資料它會建議你開啟allow large results的選項，不過尷尬的是如果你要用這個功能就必須是一個非同步的Job，而官方的開發文件對這邊對非同步Job幾乎沒有什麼著墨，所以我這邊就當作是分享順便記錄方便之後使用吧。<br>　　要使用原生的api-sdk一開始就是需要建立一個認證連線，這邊我只用的是jwt的方法，配合各個服務所提供credentials來做一個認證，至於這個NewJWTConfig的方法也不是我發明的，而是直接參考GoogleCloudPlatform的認證方法在小改良一下，基本上GCP上面所有的服務如果要使用api-sdk這樣的方式都是通用的，有興趣各位在自己去爬爬原始碼吧，再來是要建立一個新的job<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">func jobInsert(cmd string) (string, error) &#123;</span><br><span class="line">	<span class="string">jobConfigQuery :</span>= bigquery.JobConfigurationQuery&#123;</span><br><span class="line"><span class="label">		Query:</span> cmd,</span><br><span class="line"><span class="label">		UserDefinedFunctionResources:</span> []*bigquery.UserDefinedFunctionResource&#123;&amp;bigquery.UserDefinedFunctionResource&#123;</span><br><span class="line"><span class="label">			InlineCode:</span> `</span><br><span class="line">				function Calendar(row, emit)&#123;</span><br><span class="line">					var startTime = <span class="keyword">new</span> Date(row.start*<span class="number">1000</span>), endTime = <span class="keyword">new</span> Date(row.end*<span class="number">1000</span>);</span><br><span class="line">					<span class="keyword">while</span>(endTime &gt; startTime)&#123;</span><br><span class="line">						emit(&#123;<span class="string">YEAR:</span> startTime.getUTCFullYear(), <span class="string">MONTH:</span> startTime.getUTCMonth()+<span class="number">1</span>, <span class="string">Day:</span> startTime.getUTCDate(), <span class="string">Hour:</span> startTime.getUTCHours()&#125;);</span><br><span class="line">						startTime.setTime(startTime.getTime()+<span class="number">60</span>*<span class="number">60</span>*<span class="number">1000</span>)</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				bigquery.defineFunction(</span><br><span class="line">					<span class="string">'Calendar'</span>,                           <span class="comment">// Name of the function exported to SQL</span></span><br><span class="line">					[<span class="string">'start'</span>, <span class="string">'end'</span>],                    <span class="comment">// Names of input columns</span></span><br><span class="line">					[&#123;<span class="string">'name'</span>: <span class="string">'YEAR'</span>, <span class="string">'type'</span>: <span class="string">'integer'</span>&#125;,  <span class="comment">// Output schema</span></span><br><span class="line">					 &#123;<span class="string">'name'</span>: <span class="string">'MONTH'</span>, <span class="string">'type'</span>: <span class="string">'integer'</span>&#125;,</span><br><span class="line">					 &#123;<span class="string">'name'</span>: <span class="string">'Day'</span>, <span class="string">'type'</span>: <span class="string">'integer'</span>&#125;,</span><br><span class="line">					 &#123;<span class="string">'name'</span>: <span class="string">'Hour'</span>, <span class="string">'type'</span>: <span class="string">'integer'</span>&#125;</span><br><span class="line">					],</span><br><span class="line">					Calendar                       <span class="comment">// Reference to JavaScript UDF</span></span><br><span class="line">				);`,</span><br><span class="line">		&#125;&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="string">jobConfig :</span>= bigquery.JobConfiguration&#123;<span class="string">Query:</span> &amp;jobConfigQuery&#125;</span><br><span class="line"></span><br><span class="line">	result, <span class="string">err :</span>= jobsService.Insert(projectID, &amp;bigquery.Job&#123;<span class="string">Configuration:</span> &amp;jobConfig&#125;).Do()</span><br><span class="line">	<span class="keyword">if</span> err != nil &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result.JobReference.JobId, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>要建立一個非同步的job最重要的事情就是要建立一個JobConfigurationQuery的條件，說真如果只憑GoDoc上面的說明要產生上面的程式根本是天方夜譚，我個人認為是不可能，因為所有api-sdk的文件都是機器產生出來的，所以教學範例也少的可憐，基本上能有這段程式碼，我是藉由google console所送出的封包，反向推敲才設定出來的結果，真的可以說是行行皆辛苦，如果你僅需要執行一個耗時很久查詢，而沒有需要UDF，基本上你可以直接把UserDefinedFunctionResources這東西整個拿掉，其實這整篇的重點有70%就是在這個JobConfigurationQuery的設置，至於後面的job的狀態和資料的讀取就請大家直接看原始碼吧，最後附上<a href="https://github.com/lbeeon/demo-bigquery" target="_blank" rel="external">範例程式</a>。</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/Blog/tags/BigQuery/">BigQuery</a><a href="/Blog/tags/GCP/">GCP</a><a href="/Blog/tags/Google-Cloud-Platform/">Google Cloud Platform</a><a href="/Blog/tags/golang/">golang</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/Blog/2017/05/07/BigQuery/#disqus_thread" class="comments-count-link">Comments</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/Blog/2017/05/01/dockerize-database/" title="Dockerize Database" itemprop="url">Dockerize Database</a>
   </h1>
   <p class="article-author">By
@@ -401,70 +472,6 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/Blog/2017/02/28/bangkok-independent-travel-II/" title="曼谷自由行" itemprop="url">曼谷自由行</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/Blog/about" title="Ben" target="_blank" itemprop="author">Ben</a>
-		
-  <p class="article-time">
-    <time datetime="2017-02-28T15:47:30.000Z" itemprop="datePublished"> 發表於 2017-02-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h2 id="曼谷自由行II">曼谷自由行II</h2><h3 id="1/28">1/28</h3><p>這天預計的行程的只有兩個，一個是聽說很大的市集洽圖洽(CHATUCHAK WEEKEND MARKET)，另一個則是事先買好票的暹羅劇場。說真的要寫這段的時候其實有滿多回憶的，不過翻了一下我的照片，根本完全悲劇，這麼大的市集我只拍不到五張照片…看來只能用回憶湊合一下了，洽圖洽市集建議各位如果有去曼谷，絕對要誇一個六日去這個市集參觀一下，這個市集真的是大到不像話，拜託沒去過的人不要拿什麼花園夜市之類的LP來比雞腿，人家可是佔地超過16個足球場的市集，光是用想的，不對我根本沒辦法想像…<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0646.JPG" width="50%" alt="CHATUCHAK" title="CHATUCHAK"></p>
-<p>話說這天一早我兩兄弟就坐上BTS直接前往Mochit站，一路上整個車廂到處都外國觀光客，想必我們的目的地應該都是洽圖洽市集，所以一下BTS我兩就看著標示跟著人群，馬上就來到了市集的一小角，<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0647.JPG" width="50%" alt="CHATUCHAK" title="CHATUCHAK"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0649.JPG" width="50%" alt="CHATUCHAK" title="CHATUCHAK"></p>
-<p>印象中我在BTS上就看到一大片詭異的建築物，那時候我內心還想應該不是這個吧，如果是這個不要說一天了，兩天都不可能逛的完…進去之後果然沒有讓我失望，真的逛不完啊!!!!我們一開始進去的地方應該算是賣服飾類的，由於我根本沒有帶什麼衣服，所以早就下定決心一定要買個幾件，不然接下來幾天我就沒衣服穿了。在出發到泰國之前每一位朋友都千叮嚀萬交代的告訴我說一定要殺價!!!所以一開始我就鎖定了幾件衣服開始來個討價還價模式，不過真的太便宜了，一件平均都在100泰銖上下，換算成台幣也才90塊，所以後面我真的是懶得殺了XD，看喜歡就直接買吧，就這樣我和我兄弟倆一區逛過一區，有的是一整區都玉飾、古玩，有的則是一整區都在賣皮件，不過最讓人有印象的是一整區都在買寵物相關的地方，舉凡你想的到的鳥類、蛇、魚、狗和貓之類的東西，真的是應有盡有，但是這邊的氣味真的是很嚇人，我兩一進入後就像是個迷路的羔羊，怎麼樣都繞不出來，我都快崩潰了，原本逛這個市集我有一個原則，就是不走曾經走過的路，但是到後面我真的受不了，只好依照我腦中的路徑回到我比較能接受的區域，說實在，逛這市集我兩一點都沒偷懶，從早上10點一直走到1點多，我腳真的是又酸又痛，索性來個腳底按摩回復一下體力，不過不知道是不是我筋太硬，每一次按完我都沒有覺得很舒服，反倒是我的腳好像被拉完筋一樣超級無敵痛，感覺人家按完是要爽的但是我卻他媽超痛，這中間絕對是有什麼誤會，由於這個市集逛不完是一個不爭的事實，所以我兩按摩完之後討論一下決定去補一下第一天沒有逛到的Terminal 21。<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0664.JPG" width="50%" alt="Terminal 21" title="Terminal 21"><br>Terminal 21(第21航站?)，這是一個以航站為主題的百貨公司，說真的是滿酷的，而且不知道是不是因為機場有免稅店的關係，所以整個搭配起來完全沒有違和感，而且每一個層樓都還有不同巧思，有得是日本主題，有的則是倫敦，來這邊除了逛街我想也很適合拍一些照片，<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0651.JPG" width="50%" alt="Terminal 21" title="Terminal 21"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0662.JPG" width="50%" alt="Terminal 21" title="Terminal 21"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0663.JPG" width="50%" alt="Terminal 21" title="Terminal 21"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0660.JPG" width="50%" alt="Terminal 21" title="Terminal 21"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0655.JPG" width="50%" alt="Terminal 21" title="Terminal 21"></p>
-<p>在逛完百貨公司後，由於我昨天預約了第二次套量西服，所以我就暫時和我兄弟分散，他去他的耍廢行程，我去我的套量，並約好八月十五一起殺韃子，不對是六點一起去看暹羅劇場表演，不過套量的過程我也沒拍照，所以很快的文章要來到暹羅劇場(Siam Niramit)，<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0669.JPG" width="50%" alt="Siam Niramit" title="Siam Niramit"></p>
-<p>話說要看這個暹羅劇場還有一段插曲，就是我們出發前就在KKDay定了表演的票，不過因為訂票的時間大概是出發前5天…所以很多票是在出發前都還沒那道，不過Email寄過來的票都有寫要印出來使用，我們兩個也不知道是哪根筋有問題，居然說要去泰國ibon印，我也是很懶所以想說就這樣吧，誰知道不要說是ibon，連輸出店都沒看到，我上網查了一下印一張還40塊泰銖，這他媽根本搶劫，最後我火大乾脆不印了，我想說都買e-Ticket哪有一定要印出來的道理?說真的在領票之前我還想了一套說詞，什麼我們有印但是行李遺失之類的廢話…不過最後結果證明不用印拉!!!我一掏出的購買證明，服務員馬上是是是的就把票遞給我，害我白擔心的一整天，話說暹羅劇場真的酷，一進去感覺上就想是個主題公園，有大象和一些貌似傳統的建築，<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0673.JPG" width="50%" alt="Siam Niramit" title="Siam Niramit"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0674.JPG" width="50%" alt="Siam Niramit" title="Siam Niramit"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0679.JPG" width="50%" alt="Siam Niramit" title="Siam Niramit"><br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0680.JPG" width="50%" alt="Siam Niramit" title="Siam Niramit"></p>
-<p>由於吃飽飯後離開演的時間所剩不多，所以我倆就走走晃晃簡單繞一下，再來就是進入主秀的部分，不過整個表演是不能拍照攝影，所以我只能大概簡述一下內容，一開始我以為暹羅劇場是個類似馬戲團的表演活動，不過完全沒關係，這個劇場大概就想是個舞台劇的感覺，簡單來說就是介紹泰國的歷史，包含過去的輝煌的王朝、社會的演進、傳統農業的生活，以及他們天性樂觀和佛教對他們的影響，內容算是很豐富，而且舞台效果也超好，一場求雨的場景完全讓我嚇呆，不但有著閃電打雷的特效，雨還真的下下來，中間表演還穿插著一些與觀眾的互動，整個就是有趣，如果要去的曼谷玩的人很推薦去看一下，在看完表演後由於這個地方離捷運站有段距離，我們怕時間太晚所以就直接上接駁車直接返回住宿，在曼谷的這幾天晚上，我每天都有買點東西吃，<br>   <img src="/Blog/2017/02/28/bangkok-independent-travel-II/IMG_0684.JPG" width="50%" alt="Value" title="Value"></p>
-<p>話說我沒喝過氣泡水，一喝到完全就是和我意，除了感覺很潮之外，根本就是汽水阿，搞得我最近也想買個氣泡水機…to be continue.</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/Blog/tags/旅遊/">旅遊</a><a href="/Blog/tags/日記/">日記</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/Blog/2017/02/28/bangkok-independent-travel-II/#disqus_thread" class="comments-count-link">Comments</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/Blog/page/2/">2</a><a class="page-number" href="/Blog/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/Blog/page/5/">5</a><a class="extend next" rel="next" href="/Blog/page/2/">Next<span></span></a>
@@ -516,11 +523,15 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 			
 		
 			
-				<li><a href="/Blog/tags/Docker/" title="Docker">Docker<sup>2</sup></a></li>
+				<li><a href="/Blog/tags/Note/" title="Note">Note<sup>2</sup></a></li>
 			
 		
 			
 				<li><a href="/Blog/tags/C/" title="C#">C#<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/Blog/tags/Docker/" title="Docker">Docker<sup>2</sup></a></li>
 			
 		
 			
@@ -532,7 +543,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 			
 		
 			
-				<li><a href="/Blog/tags/Note/" title="Note">Note<sup>2</sup></a></li>
+				<li><a href="/Blog/tags/golang/" title="golang">golang<sup>2</sup></a></li>
 			
 		
 			
@@ -544,7 +555,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 			
 		
 			
-				<li><a href="/Blog/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
+				<li><a href="/Blog/tags/PostgresSQL/" title="PostgresSQL">PostgresSQL<sup>1</sup></a></li>
 			
 		
 			
@@ -552,11 +563,7 @@ docker <span class="keyword">run</span> --name myadmin -<span class="keyword">d<
 			
 		
 			
-				<li><a href="/Blog/tags/PostgresSQL/" title="PostgresSQL">PostgresSQL<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/Blog/tags/golang/" title="golang">golang<sup>1</sup></a></li>
+				<li><a href="/Blog/tags/MySQL/" title="MySQL">MySQL<sup>1</sup></a></li>
 			
 		
 			
